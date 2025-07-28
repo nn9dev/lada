@@ -359,3 +359,27 @@ class FrameRestorer:
 
     def get_frame_restoration_queue(self):
         return self.frame_restoration_queue
+
+class PassthroughFrameRestorer:
+    def __init__(self, video_file: str):
+        self.video_file = video_file
+        self.frame_restoration_queue = self.PassthroughQueue(self)
+
+    def start(self, start_ns: int = 0):
+        pass
+
+    def stop(self):
+        pass
+
+    def get_frame_restoration_queue(self):
+        return self.frame_restoration_queue
+
+    class PassthroughQueue:
+        def __init__(self, frame_restorer):
+            self.frame_restorer = frame_restorer
+
+        def get(self, block=True, timeout=None):
+            return None
+
+        def put(self, item, block=True, timeout=None):
+            pass

@@ -1,9 +1,8 @@
 import logging
-
-from gi.repository import GLib
-from pathlib import Path
 import json
 import os
+from pathlib import Path
+from appdirs import user_config_dir
 
 from lada import MODEL_WEIGHTS_DIR, LOG_LEVEL
 
@@ -49,7 +48,7 @@ class Config:
     def save(self):
         config_file_path = get_config_file_path()
         if not config_file_path.parent.exists():
-            config_file_path.parent.mkdir()
+            config_file_path.parent.mkdir(parents=True)
         with open(config_file_path, 'w') as f:
             config_dict = self._as_dict()
             json.dump(config_dict, f)
@@ -101,5 +100,5 @@ class Config:
 
 
 def get_config_file_path() -> Path:
-    base_config_dir = GLib.get_user_config_dir()
-    return Path(base_config_dir).joinpath('lada').joinpath('lada.conf')
+    config_dir = user_config_dir('lada', appauthor=False)
+    return Path(config_dir).joinpath('lada.conf')

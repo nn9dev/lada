@@ -5,6 +5,7 @@ import subprocess
 from contextlib import contextmanager
 from fractions import Fraction
 from typing import Callable
+import pathlib
 
 import av
 import cv2
@@ -87,7 +88,9 @@ class VideoReader:
         self.container.seek(offset)
 
 def get_video_meta_data(path: str) -> VideoMetadata:
-    cmd = ['ffprobe', '-v', 'quiet', '-output_format', 'json', '-select_streams', 'v', '-show_streams', '-show_format', path]
+    # Convert path to Windows format with backslashes and ensure it's properly escaped
+    path = str(pathlib.Path(path).resolve()).replace('/', '\\')
+    cmd = ['ffprobe', '-of', 'json', '-select_streams', 'v', '-show_streams', '-show_format', path]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err =  p.communicate()
     if p.returncode != 0:
